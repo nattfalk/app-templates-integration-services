@@ -1,10 +1,8 @@
 using System;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Schema;
 using System.Threading.Tasks;
 
 namespace SB_Integration_ComosDB
@@ -12,12 +10,13 @@ namespace SB_Integration_ComosDB
     public class SBtoCosmosDB
     {
         [FunctionName("SBtoCosmosDB")]
-        public async Task Run([ServiceBusTrigger("demo-queue", Connection = "SBConnectionString")]string myQueueItem,
+        public async Task Run(
+            [ServiceBusTrigger("demo-queue", Connection = "SBConnectionString")]string myQueueItem,
             [CosmosDB(
-        databaseName: "demo-database",
-        collectionName: "demo-container",
-        CreateIfNotExists = true,
-        ConnectionStringSetting = "CosmosDbConnectionString")]IAsyncCollector<dynamic> documentsOut,
+                databaseName: "demo-database",
+                collectionName: "demo-container",
+                CreateIfNotExists = true,
+                ConnectionStringSetting = "CosmosDbConnectionString")]IAsyncCollector<dynamic> documentsOut,
             ILogger log)
         {
             if (IsValidJsonString(myQueueItem, log))
@@ -40,11 +39,10 @@ namespace SB_Integration_ComosDB
                 throw new Exception($"Failed to process message: {myQueueItem}");
             }
 
-            log.LogInformation($"C# ServiceBus queue trigger function processed message: {myQueueItem}");
-
+            log.LogInformation($"UPDATED!!!! C# ServiceBus queue trigger function processed message: {myQueueItem}");
         }
 
-        private bool IsValidJsonString(string potentialJson, ILogger log)
+        private static bool IsValidJsonString(string potentialJson, ILogger log)
         {
             try
             {
